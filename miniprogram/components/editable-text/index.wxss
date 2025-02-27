@@ -1,0 +1,183 @@
+.editable-item {
+  display: flex;
+  flex-direction: column;
+  padding: 0rpx;
+  background: #fff;
+  border-radius: 12rpx;
+  margin: 5rpx 0;
+  transition: all 0.3s ease;
+  width: 100%;
+  /* 关键修改：让子元素在垂直方向上有弹性，允许输入框撑开高度 */
+  min-height: 0; 
+}
+
+.label {
+  font-size: 28rpx;
+  color: #666;
+  padding: 0 0 10rpx 0;
+  position: relative;
+}
+
+.label::after {
+  content: '';
+  position: absolute;
+  right:12rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2rpx;
+  height: 24rpx;
+  background: #eee;
+}
+
+.input {
+  width: 100%;
+  font-size: 28rpx;
+  line-height: 1.6;
+  padding: 12rpx 16rpx;
+  color: #333;
+  background: #f8f9fa;
+  border-radius: 8rpx;
+  border: 5rpx solid #eee;
+  transition: all 0.3s ease;
+  min-height: 80rpx;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  box-sizing: border-box;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  resize: none;
+  /* 防止输入框收缩 */
+  flex-shrink: 0; 
+  /* 重置外边距 */
+  margin: 0; 
+}
+.input:focus {
+  background: #fff;
+  border-color: #007aff;
+  box-shadow: 0 0 0 2rpx rgba(0,122,255,0.1);
+}
+
+.editable-text {
+  position: relative;
+  width: 100%;
+  min-height: 88rpx; /* 固定最小高度 */
+}
+
+.text-display {
+  display: flex;
+  padding: 16rpx;
+  min-height: inherit;
+  background: #fff;
+  border-radius: 8rpx;
+}
+
+.value {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+  word-break: break-all;
+  line-height: 1.5;
+  padding: 0 16rpx;
+  white-space: pre-wrap; /* 保留换行和空格 */
+}
+
+.edit-hint {
+  font-size: 24rpx;
+  color: #999;
+  margin-left: 16rpx;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.text-display:hover .edit-hint {
+  opacity: 1;
+}
+
+.edit-mode {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #f5f7fa;
+  border-radius: 8rpx;
+  z-index: 1;
+  min-height: inherit;
+}
+
+.edit-form {
+  display: flex;
+  padding: 16rpx;
+  min-height: inherit;
+}
+
+.edit-label {
+  width: 160rpx; /* 与非编辑状态保持一致 */
+  font-size: 28rpx;
+  color: #666;
+  flex-shrink: 0;
+}
+
+.edit-input-wrapper {
+  flex: 1;
+  padding: 0 16rpx;
+}
+
+.edit-input {
+  width: 100%;
+  min-height: 44rpx;
+  font-size: 28rpx;
+  color: #333;
+  background: #fff;
+  border-radius: 4rpx;
+  padding: 8rpx 16rpx;
+  line-height: 1.5;
+}
+
+.edit-textarea {
+  width: 100%;
+  font-size: 28rpx;
+  color: #333;
+  background: #fff;
+  border-radius: 4rpx;
+  padding: 8rpx 16rpx;
+  line-height: 1.5;
+  min-height: 88rpx;
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12rpx 16rpx;
+  gap: 16rpx;
+  border-top: 2rpx solid #eee;
+}
+
+.action-btn {
+  font-size: 26rpx;
+  padding: 8rpx 24rpx;
+  border-radius: 4rpx;
+  transition: all 0.2s;
+}
+
+.action-btn.cancel {
+  color: #666;
+}
+
+.action-btn.confirm {
+  color: #007aff;
+}
+
+.action-btn:active {
+  opacity: 0.7;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

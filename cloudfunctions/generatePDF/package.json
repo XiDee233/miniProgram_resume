@@ -1,0 +1,9 @@
+{
+  "name": "generatePDF",
+  "version": "1.0.0",
+  "dependencies": {
+    "wx-server-sdk": "latest",
+    "pdf-lib": "^1.17.1",
+    "fontkit": "latest"
+  }
+}

@@ -1,0 +1,12 @@
+<view class="editable-item">
+  <text class="label" wx:if="{{label}}">{{label}}</text>
+  <textarea 
+    class="input"
+    value="{{value}}"
+    placeholder="{{placeholder}}"
+    bindinput="onInput"
+    auto-height
+    maxlength="-1"
+    show-confirm-bar="{{false}}"
+  />
+</view>

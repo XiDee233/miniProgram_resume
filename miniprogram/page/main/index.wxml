@@ -1,0 +1,34 @@
+<view class="container">
+  <!-- 添加 slogan -->
+  <view class="slogan">想做什么重要的事？</view>
+
+  <!-- 中间输入框 -->
+  <view class="input-container">
+    <input 
+      class="main-input" 
+      placeholder="向客户提案/向他表白/进宅" 
+      placeholder-class="placeholder-style"
+      bindinput="onInput"
+    />
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="button-container">
+    <button class="big-button" hover-class="button-hover" bindtap="handleTap">
+      智慧分析
+    </button>
+  </view>
+
+
+  <!-- 动态背景文字 -->
+  <view class="background-examples">
+    <block wx:for="{{examples}}" wx:key="id">
+      <view 
+        class="example-bubble" 
+        style="left:{{item.left}}%; top:{{item.top}}%; font-size:{{item.size}}rpx;">
+        {{item.text}}
+      </view>
+    </block>
+  </view>
+
+</view>

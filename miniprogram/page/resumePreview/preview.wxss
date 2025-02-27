@@ -1,0 +1,442 @@
+.tab-bar {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20rpx;
+}
+
+.tab {
+  padding: 20rpx 40rpx;
+  font-size: 30rpx;
+  border-bottom: 4rpx solid transparent;
+  transition: 0.3s;
+}
+
+.active {
+  color: #007aff;
+  border-bottom-color: #007aff;
+}
+
+.resume-box {
+  padding: 20rpx;
+  background: #f7f8fa;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.download-btn {
+  width: 80%;
+  background: #007aff;
+  color: white;
+  font-size: 30rpx;
+  border-radius: 12rpx;
+  margin-top: 30rpx;
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f5f7fa;
+}
+
+.content-scroll {
+  flex: 1;
+  overflow-y: auto;
+  height: auto;
+}
+
+.content-wrapper {
+  padding: 24rpx;
+  padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
+  height: auto;
+  min-height: 100%;
+}
+
+.card {
+  background: #fff;
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  overflow: visible;
+  transition: all 0.3s ease;
+}
+
+.card:active {
+  transform: scale(0.98);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 24rpx;
+  border-bottom: 2rpx solid #eee;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+}
+
+.edit-btn {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24rpx;
+  background: #f5f7fa;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.edit-btn:active {
+  background: #e8eaed;
+}
+
+.card-content {
+  padding: 16rpx;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* 基本信息样式 */
+.info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+}
+
+.label {
+  color: #666;
+  font-size: 28rpx;
+  margin-right: 16rpx;
+}
+
+.value {
+  color: #333;
+  font-size: 28rpx;
+}
+
+/* 教育经历样式 */
+.edu-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.school-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.school {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.duration {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.course-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 8rpx;
+}
+
+.tag {
+  padding: 8rpx 16rpx;
+  background: #f5f7fa;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 底部操作栏 */
+.action-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  padding: 16rpx 24rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  background: #fff;
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.05);
+  z-index: 100;
+}
+
+.action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rpx;
+  padding: 16rpx 32rpx;
+  border-radius: 12rpx;
+  background: #f5f7fa;
+  transition: all 0.2s ease;
+}
+
+.action-btn.primary {
+  background: #007aff;
+  color: #fff;
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+}
+
+.action-btn text {
+  font-size: 24rpx;
+}
+
+/* 动画效果 */
+@keyframes slideIn {
+  from {
+    transform: translateY(20rpx);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.card {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* 添加按钮样式优化 */
+.add-skill-btn,
+.add-section-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx;
+  margin: 26rpx 0rpx;
+  background: rgba(0, 122, 255, 0.1);
+  border: 2rpx dashed rgba(0, 122, 255, 0.3);
+  border-radius: 8rpx;
+  color: #007aff;
+  font-size: 28rpx;
+  transition: all 0.3s ease;
+}
+
+.add-skill-btn:active,
+.add-section-btn:active {
+  background: rgba(0, 122, 255, 0.2);
+}
+
+.add-skill-btn .icon-add,
+.add-section-btn .icon-add {
+  margin-right: 8rpx;
+  font-size: 32rpx;
+  color: #007aff;
+}
+
+/* 卡片内容布局优化 */
+.section-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+/* 删除按钮样式 */
+.delete-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 88rpx;
+  height: 64rpx;
+  padding: 0 16rpx;
+  color: #ff3b30;
+  font-size: 28rpx;
+  border-radius: 8rpx;
+  background: rgba(255, 59, 48, 0.1);
+  transition: all 0.2s;
+}
+
+.delete-btn:active {
+  background: rgba(255, 59, 48, 0.2);
+}
+
+/* 编辑状态布局优化 */
+.edit-wrapper {
+  min-height: 88rpx; /* 保持与非编辑状态一致的最小高度 */
+  display: flex;
+  flex-direction: column;
+}
+
+/* 项目和工作经历卡片样式 */
+.experience-card {
+  position: relative;
+  padding: 24rpx;
+  background: #fff;
+  border-radius: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+/* 添加卡片内容过渡动画 */
+.card-content, 
+.info-grid, 
+.edu-section,
+.work-info,
+.project-info {
+  height: auto;
+  transition: all 0.3s ease;
+}
+
+/* 编辑项样式优化 */
+.editable-item {
+  background: #fff;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+}
+
+.editable-item:hover {
+  background: #f8f9fa;
+}
+
+/* 移除之前的左右布局相关样式 */
+.label::after {
+  display: none;
+}
+
+.work-info,
+.project-info,
+.edu-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.skills-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  margin-bottom: 16rpx;
+  width: 100%;
+}
+
+.skill-item {
+  display: flex;
+  align-items: flex-start;
+  background: #f8f9fa;
+  border-radius: 8rpx;
+  border: 2rpx solid #eee;
+  padding: 8rpx 20rpx;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.skill-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+  padding: 0;
+  min-height: 44rpx;
+  width: 0;
+  line-height: 1.5;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.skill-item .delete-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64rpx;
+  height: 64rpx;
+  color: #ff3b30;
+  font-size: 36rpx;
+  margin-left: 8rpx;
+  border-radius: 8rpx;
+  background: rgba(255, 59, 48, 0.1);
+  transition: all 0.2s;
+}
+
+.skill-item .delete-icon:active {
+  background: rgba(255, 59, 48, 0.2);
+}
+
+.bottom-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  padding: 24rpx;
+  background: #fff;
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  box-sizing: border-box;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom)); /* 适配 iPhone 底部区域 */
+}
+
+.bottom-btn {
+  flex: 1;
+  margin: 0 12rpx;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  border-radius: 8rpx;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.btn-preview {
+  background: #f8f9fa;
+  color: #333;
+  border: 2rpx solid #ddd;
+}
+
+.btn-save {
+  background-color: #007aff !important; /* 强制应用背景色 */
+  color: #ffffff !important; /* 强制应用文字颜色 */
+  border: none;
+}
+
+.btn-submit {
+  background-color: #34c759 !important; /* 强制应用背景色 */
+  color: #ffffff !important; /* 强制应用文字颜色 */
+  border: none;
+}
+
+.bottom-btn:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+
+/* 荣誉部分样式 */
+.honor-item {
+  display: flex;
+  align-items: flex-start;
+  background: #f8f9fa;
+  border-radius: 8rpx;
+  border: 2rpx solid #eee;
+  padding: 8rpx 20rpx;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}

@@ -1,0 +1,29 @@
+<view class="editable-array">
+  <view class="array-header">
+    <text class="label">{{label}}</text>
+    <view class="add-btn" bindtap="addItem">
+      <text>添加</text>
+    </view>
+  </view>
+  <view class="array-items">
+    <view class="array-item" wx:for="{{items}}" wx:key="index">
+      <view class="item-content" wx:if="{{editingIndex !== index}}">
+        <text class="item-text">{{item}}</text>
+        <view class="item-actions">
+          <text class="action-btn edit" bindtap="editItem" data-index="{{index}}">编辑</text>
+          <text class="action-btn delete" bindtap="deleteItem" data-index="{{index}}">删除</text>
+        </view>
+      </view>
+      <view class="item-edit" wx:else>
+        <input class="edit-input" 
+               value="{{tempValue}}"
+               focus="true"
+               bindinput="onInput"/>
+        <view class="edit-actions">
+          <text class="action-btn cancel" bindtap="cancelEdit">取消</text>
+          <text class="action-btn confirm" bindtap="saveEdit">确定</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

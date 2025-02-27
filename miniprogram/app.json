@@ -1,0 +1,27 @@
+{
+  "pages": [
+    "page/resumeMain/index",
+    "page/resumePreview/preview"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "岗位简历生成器",
+    "navigationBarBackgroundColor": "#fff",
+    "backgroundColor": "#f8f9fa"
+  },
+  "networkTimeout": {
+    "request": 10000,
+    "connectSocket": 10000,
+    "uploadFile": 10000,
+    "downloadFile": 10000
+  },
+  "debug": false,
+  "style": "v2",
+  "cloud": true,
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents",
+  "useExtendedLib": {
+    "weui": true
+  },
+  "libVersion": "3.0.2"
+}
