@@ -13,7 +13,11 @@ Page({
     activeTab: "preview",
     pdfUrl: "",
     isModified: false,
-    isGenerating: false
+    isGenerating: false,
+    currentStep: 1, // 新增
+    generatedTokens: 0, // 新增
+    progressWidth: '0%', // 新增
+    progressText: '0%' // 新增
   },
 
   onLoad: function (options) {
@@ -421,12 +425,21 @@ Page({
 
 
   previewWord() {
-    this.setData({ isGenerating: true });
+    this.setData({
+      isGenerating: true,
+      currentStep: 1, // 新增
+      generatedTokens: 0, // 新增
+      progressWidth: '0%', // 新增
+      progressText: '0%' // 新增
+    });
 
     wx.showToast({
       title: '正在生成Word，请稍候...',
       icon: 'none'
     });
+
+    // 模拟加载过程
+    this.startProgressSimulation(); // 新增
 
     // 调用云函数生成Word
     wx.cloud.callFunction({
@@ -445,6 +458,29 @@ Page({
     });
   },
 
+  startProgressSimulation() {
+    this.setData({ currentStep: 1 }); // 新增
+    this.updateProgress(); // 新增
+    let step = 1;
+    const interval = setInterval(() => {
+      if (step < 4 && this.data.isGenerating) { // 修改
+        step++;
+        this.setData({ currentStep: step });
+        this.updateProgress();
+      }
+    }, 1000); // 每1秒更新一次进度
+    this.interval = interval; // 保存 interval，以便在其他函数中清除
+  },
+
+  // 更新进度的方法
+  updateProgress() {
+    const progress = Math.round((this.data.currentStep / 4) * 100);
+    this.setData({
+      progressWidth: progress + '%',
+      progressText: progress + '%'
+    });
+  },
+
   checkWordFileUpload(taskId) {
     const db = wx.cloud.database();
     let attempts = 0;
@@ -453,6 +489,7 @@ Page({
     const checkInterval = setInterval(async () => {
       if (attempts >= maxAttempts) {
         clearInterval(checkInterval);
+        clearInterval(this.interval); // 清除模拟进度的定时器
         this.handleTimeout();
         return;
       }
@@ -467,27 +504,43 @@ Page({
       } catch (err) {
         console.error('查询任务状态失败:', err);
         clearInterval(checkInterval);
+        clearInterval(this.interval); // 清除模拟进度的定时器
         this.handleError('查询状态失败');
       }
     }, 2000); // 每2秒检查一次
+    this.checkInterval = checkInterval; // 保存 interval，以便在其他函数中清除
   },
 
   handleTaskStatus(task, checkInterval) {
     if (task.status === 'completed') {
       clearInterval(checkInterval);
+      clearInterval(this.interval); // 清除模拟进度的定时器
       this.setData({
         wordUrl: task.fileID,
-        isGenerating: false
+        isGenerating: false,
+        currentStep: 4 // 新增
       });
+      this.updateProgress(); // 新增
       this.fallbackDownloadWord(task.fileID);
     } else if (task.status === 'failed') {
       clearInterval(checkInterval);
+      clearInterval(this.interval); // 清除模拟进度的定时器
+      this.setData({
+        isGenerating: false,
+        currentStep: 1 // 新增
+      });
+      this.updateProgress(); // 新增
       this.handleError('文件生成失败');
     }
   },
 
   handleGenerationError() {
-    this.setData({ isGenerating: false });
+    clearInterval(this.interval); // 清除模拟进度的定时器
+    this.setData({
+      isGenerating: false,
+      currentStep: 1 // 新增
+    });
+    this.updateProgress(); // 新增
     wx.showToast({
       title: '生成失败，请重试',
       icon: 'none'
@@ -495,12 +548,22 @@ Page({
   },
 
   handleTimeout() {
-    this.setData({ isGenerating: false });
+    clearInterval(this.interval); // 清除模拟进度的定时器
+    this.setData({
+      isGenerating: false,
+      currentStep: 1 // 新增
+    });
+    this.updateProgress(); // 新增
     wx.showToast({ title: '请求超时，请重试', icon: 'none' });
   },
 
   handleError(message) {
-    this.setData({ isGenerating: false });
+    clearInterval(this.interval); // 清除模拟进度的定时器
+    this.setData({
+      isGenerating: false,
+      currentStep: 1 // 新增
+    });
+    this.updateProgress(); // 新增
     wx.showToast({ title: message, icon: 'none' });
   },
 

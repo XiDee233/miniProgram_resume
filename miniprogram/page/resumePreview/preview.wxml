@@ -32,9 +32,23 @@
               type="email"
               bind:change="onFieldChange"
               data-field="email"/>
-          </view>
-        </view>
-      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 加载提示 -->
+<view class="loading-container" wx:if="{{isGenerating}}">
+  <view class="loading-spinner">
+    <view class="loading-step" wx:for="{{[1,2,3,4]}}" wx:key="*this" class="{{currentStep >= item ? 'active' : ''}}"></view>
+  </view>
+  <view class="loading-text">
+    正在生成Word，请稍候... ({{progressText}})
+  </view>
+  <view class="progress-bar">
+    <view class="progress-bar-inner" style="width: {{progressWidth}};">
+    </view>
+  </view>
+</view>
 
       <!-- 教育经历卡片 -->
       <view class="card">
@@ -225,7 +239,7 @@
       复制文本
     </view>
     <view class="bottom-btn btn-save" bindtap="previewWord">
-      预览PDF
+      生成简历
     </view>
     <view class="bottom-btn btn-submit" bindtap="exaggerateResume">
       夸大能力
