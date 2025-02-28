@@ -17,7 +17,9 @@ Page({
     currentStep: 1, // 新增
     generatedTokens: 0, // 新增
     progressWidth: '0%', // 新增
-    progressText: '0%' // 新增
+    progressText: '0%', // 新增
+    showModal: false, // 新增：控制弹窗显示
+    imageUrl: '' // 新增：存储上传的证件照URL
   },
 
   onLoad: function (options) {
@@ -424,28 +426,65 @@ Page({
   },
 
 
+  // 显示上传证件照的弹窗
   previewWord() {
-    this.setData({
-      isGenerating: true,
-      currentStep: 1, // 新增
-      generatedTokens: 0, // 新增
-      progressWidth: '0%', // 新增
-      progressText: '0%' // 新增
-    });
+    this.setData({ showModal: true }); // 显示弹窗
+  },
 
-    wx.showToast({
-      title: '正在生成Word，请稍候...',
-      icon: 'none'
+  // 上传图片的方法
+  uploadImage() {
+    wx.chooseImage({
+      count: 1, // 只允许选择一张图片
+      sourceType: ['camera', 'album'], // 可以选择相机或相册
+      success: (res) => {
+        const filePath = res.tempFilePaths[0]; // 获取选择的图片路径
+        this.uploadImageToCloud(filePath); // 上传图片
+      },
+      fail: () => {
+        wx.showToast({
+          title: '选择图片失败，请重试',
+          icon: 'none'
+        });
+      }
     });
+  },
 
-    // 模拟加载过程
-    this.startProgressSimulation(); // 新增
+  uploadImageToCloud(filePath) {
+    wx.cloud.uploadFile({
+      cloudPath: `photos/${Date.now()}.jpg`, // 云存储路径
+      filePath: filePath, // 本地文件路径
+      success: (res) => {
+        const imageUrl = res.fileID; // 获取上传后的文件ID
+        this.setData({ imageUrl }); // 更新图片URL
+      },
+      fail: () => {
+        wx.showToast({
+          title: '上传图片失败，请重试',
+          icon: 'none'
+        });
+      }
+    });
+  },
+
+  // 确定生成简历
+  generateResume() {
+    if (!this.data.imageUrl) {
+      wx.showToast({
+        title: '请先上传证件照',
+        icon: 'none'
+      });
+      return;
+    }
+
+    this.setData({ showModal: false, isGenerating: true }); // 隐藏弹窗并设置生成状态
+    this.startProgressSimulation(); // 开始进度模拟
 
     // 调用云函数生成Word
     wx.cloud.callFunction({
       name: 'generateWord',
       data: {
-        resumeData: this.data.resumeData
+        resumeData: this.data.resumeData, // 传递简历数据
+        imageUrl: this.data.imageUrl // 传递证件照的URL
       },
       success: (res) => {
         if (res.result.taskId) {
@@ -591,6 +630,14 @@ Page({
           });
         }
       }
+    });
+  },
+
+  // 关闭弹窗
+  closeModal() {
+    this.setData({
+      showModal: false,
+      imageUrl: '' // 可选：清空已上传的图片
     });
   },
 });

@@ -24,13 +24,13 @@ exports.main = async (event) => {
   });
 
   // 2. 异步执行生成操作
-  await generateWord(taskId, event.resumeData); // 传递简历数据
+  await generateWord(taskId, event.resumeData, event.imageUrl); // 传递简历数据和证件照 URL
 
   // 3. 立即返回任务 ID
   return { taskId };
 };
 
-async function generateWord(taskId, resumeData) {
+async function generateWord(taskId, resumeData, imageUrl) {
   try {
     // 1. 从云存储下载模板文件
     const templateRes = await cloud.downloadFile({
@@ -60,18 +60,14 @@ async function generateWord(taskId, resumeData) {
 
     const imageModule = new ImageModule(opts);
 
-    // 3. 创建 Docxtemplater 实例并传入图片模块
-
-
-         // **---  图片下载和临时文件处理  ---**
-    const cloudImageUrl = 'cloud://sybcloud1-6g6f3534e3ef9bb9.7379-sybcloud1-6g6f3534e3ef9bb9-1344626996/images/微信图片_20250218204349.jpg'; // 云存储图片 URL
+    // **---  图片下载和临时文件处理  ---**
     let localImagePath = ''; // 本地临时文件路径
- 
-    if (cloudImageUrl) {
+
+    if (imageUrl) { // 使用传入的证件照 URL
        try {
-           console.log(`开始下载云图片: ${cloudImageUrl}`);
+           console.log(`开始下载云图片: ${imageUrl}`);
            const imageRes = await cloud.downloadFile({
-               fileID: cloudImageUrl,
+               fileID: imageUrl,
            });
            const imageBuffer = imageRes.fileContent;
    
@@ -85,7 +81,6 @@ async function generateWord(taskId, resumeData) {
        } catch (error) {
            console.error('下载云图片失败:', error);
            localImagePath = ''; // 下载失败，本地路径为空
-           //  您可以选择抛出错误或者使用默认图片，这里选择将 localImagePath 设为空，表示不插入图片
        }
    }
 
@@ -117,10 +112,8 @@ async function generateWord(taskId, resumeData) {
     })),
     skills: resumeData.skills,
     honors: resumeData.honors,
-    image:localImagePath
+    image: localImagePath // 使用下载的证件照路径
   });
-    // 使用 setData 函数设置数据
-
 
     // 4. 生成文档
     doc.render();
@@ -145,5 +138,15 @@ async function generateWord(taskId, resumeData) {
     await cloud.database().collection('word_tasks').doc(taskId).update({
       data: { status: 'failed', error: e.message }
     });
+  } finally {
+    // 删除临时文件
+    if (localImagePath) {
+      fs.unlinkSync(localImagePath);
+      console.log(`临时文件 ${localImagePath} 已删除`);
+    }
+
+    // 删除任务记录
+    await cloud.database().collection('word_tasks').doc(taskId).remove();
+    console.log(`任务记录 ${taskId} 已删除`);
   }
 }
