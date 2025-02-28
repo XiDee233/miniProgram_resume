@@ -224,7 +224,7 @@
     <view class="bottom-btn btn-preview" bindtap="copyPlainText">
       复制文本
     </view>
-    <view class="bottom-btn btn-save" bindtap="previewPDF">
+    <view class="bottom-btn btn-save" bindtap="previewWord">
       预览PDF
     </view>
     <view class="bottom-btn btn-submit" bindtap="exaggerateResume">

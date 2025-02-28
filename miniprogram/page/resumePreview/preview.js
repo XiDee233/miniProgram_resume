@@ -388,7 +388,6 @@ console.log('pdf轮询'+attempts)
     }, 2000); // 每2秒检查一次
   },
 
-  // 备用下载方案
   fallbackDownload(fileID) {
     wx.showModal({
       title: '提示',
@@ -562,6 +561,117 @@ console.log('pdf轮询'+attempts)
           title: '下载失败',
           icon: 'none'
         });
+      }
+    });
+  },
+
+  previewWord() {
+    this.setData({ isGenerating: true });
+
+    wx.showToast({
+      title: '正在生成Word，请稍候...',
+      icon: 'none'
+    });
+
+    // 调用云函数生成Word
+    wx.cloud.callFunction({
+      name: 'generateWord',
+      data: {
+        resumeData: this.data.resumeData
+      },
+      success: (res) => {
+        if (res.result.taskId) {
+          this.checkWordFileUpload(res.result.taskId); // 轮询检查文件上传状态
+        } else {
+          this.handleGenerationError();
+        }
+      },
+      fail: this.handleGenerationError // 处理失败情况
+    });
+  },
+
+  checkWordFileUpload(taskId) {
+    const db = wx.cloud.database();
+    let attempts = 0;
+    const maxAttempts = 30; // 最大尝试次数
+
+    const checkInterval = setInterval(async () => {
+      if (attempts >= maxAttempts) {
+        clearInterval(checkInterval);
+        this.handleTimeout();
+        return;
+      }
+      attempts++;
+      console.log('word轮询' + attempts);
+
+      try {
+        const { data } = await db.collection('word_tasks').where({ _id: taskId }).get();
+        if (data.length > 0) {
+          this.handleTaskStatus(data[0], checkInterval);
+        }
+      } catch (err) {
+        console.error('查询任务状态失败:', err);
+        clearInterval(checkInterval);
+        this.handleError('查询状态失败');
+      }
+    }, 2000); // 每2秒检查一次
+  },
+
+  handleTaskStatus(task, checkInterval) {
+    if (task.status === 'completed') {
+      clearInterval(checkInterval);
+      this.setData({
+        wordUrl: task.fileID,
+        isGenerating: false
+      });
+      this.fallbackDownloadWord(task.fileID);
+    } else if (task.status === 'failed') {
+      clearInterval(checkInterval);
+      this.handleError('文件生成失败');
+    }
+  },
+
+  handleGenerationError() {
+    this.setData({ isGenerating: false });
+    wx.showToast({
+      title: '生成失败，请重试',
+      icon: 'none'
+    });
+  },
+
+  handleTimeout() {
+    this.setData({ isGenerating: false });
+    wx.showToast({ title: '请求超时，请重试', icon: 'none' });
+  },
+
+  handleError(message) {
+    this.setData({ isGenerating: false });
+    wx.showToast({ title: message, icon: 'none' });
+  },
+
+  fallbackDownloadWord(fileID) {
+    wx.showModal({
+      title: '提示',
+      content: '已生成完毕，是否下载？？',
+      success: (res) => {
+        if (res.confirm) {
+          wx.cloud.downloadFile({
+            fileID: fileID,
+            success: (downloadRes) => {
+              wx.openDocument({
+                filePath: downloadRes.tempFilePath,
+                fileType: 'docx' // Word文档类型
+              });
+            },
+            fail: (downloadErr) => {
+              console.log(downloadErr);
+              wx.showToast({
+                title: '下载失败，请稍后再试',
+                icon: 'none'
+              });
+            }
+          });
+        }
       }
     });
   },
