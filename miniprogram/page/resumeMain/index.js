@@ -198,16 +198,13 @@ Page({
     const db = wx.cloud.database();
     const keyDocId = "1c5ac29f67c3bb4600311a493a34ede8"; // 文档ID
 
-    // 检查云数据库中的 theKey 字段
     db.collection('keys').doc(keyDocId).get().then(res => {
       const theKey = res.data ? res.data.theKey : null;
 
-      // 如果 theKey 是空字符串，记录一个字段
       if (theKey === "") {
         this.setData({
           isKeyEmpty: true // 设置为 true
         });
-        // 显示微信自带的加载提示
         wx.showLoading({
           title: '加载中...',
           mask: true // 遮罩层
@@ -215,33 +212,40 @@ Page({
       }
 
       // 继续执行原有的逻辑
-      if (!this.data.jobDescription.trim()) {
+      if (!this.data.jobDescription.trim() || this.data.isKeyEmpty) {
         this.setData({
           isGenerating: true,
           currentStep: 1,
           generatedTokens: 0
         });
 
-        // 模拟加载过程
-        setTimeout(() => {
-          this.setData({ currentStep: 2 });
-          setTimeout(() => {
-            this.setData({ currentStep: 3 });
-            setTimeout(() => {
-              this.setData({ currentStep: 4 });
-              // 直接进行页面跳转，不需要先设置 isGenerating: false
-              wx.navigateTo({
-                url: "/page/resumePreview/preview?data=" + encodeURIComponent(JSON.stringify(this.data.defaultResumeData)),
-                success: () => {
-                  // 在页面跳转成功后再设置 isGenerating: false
-                  this.setData({ isGenerating: false });
-                  wx.hideLoading(); // 隐藏加载提示
-                }
-              });
-            }, 200);
-          }, 200);
-        }, 200);
-
+        // // 模拟加载过程
+        // setTimeout(() => {
+        //   this.setData({ currentStep: 2 });
+        //   setTimeout(() => {
+        //     this.setData({ currentStep: 3 });
+        //     setTimeout(() => {
+        //       this.setData({ currentStep: 4 });
+        //       // 直接进行页面跳转，不需要先设置 isGenerating: false
+        //       wx.navigateTo({
+        //         url: "/page/resumePreview/preview?data=" + encodeURIComponent(JSON.stringify(this.data.defaultResumeData)),
+        //         success: () => {
+        //           // 在页面跳转成功后再设置 isGenerating: false
+        //           this.setData({ isGenerating: false });
+        //           wx.hideLoading(); // 隐藏加载提示
+        //         }
+        //       });
+        //     }, 200);
+        //   }, 200);
+        // }, 200);
+        wx.navigateTo({
+          url: "/page/resumePreview/preview?data=" + encodeURIComponent(JSON.stringify(this.data.defaultResumeData)),
+          success: () => {
+            // 在页面跳转成功后再设置 isGenerating: false
+            this.setData({ isGenerating: false });
+            wx.hideLoading(); // 隐藏加载提示
+          }
+        });
         return;
       }
 
