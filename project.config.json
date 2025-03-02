@@ -48,7 +48,7 @@
   "compileType": "miniprogram",
   "libVersion": "3.0.2",
   "appid": "wx516bb99e2d968ab6",
-  "projectname": "岗位简历生成器",
+  "projectname": "简历生成器",
   "simulatorType": "wechat",
   "simulatorPluginLibVersion": {},
   "condition": {},

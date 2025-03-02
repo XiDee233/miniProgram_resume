@@ -522,6 +522,7 @@
   }
 }
 
+/* 弹窗样式 */
 .modal {
   position: fixed;
   top: 0;
@@ -540,14 +541,14 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5); /* 半透明黑色背景 */
+  background: rgba(0, 0, 0, 0.6); /* 半透明黑色背景，增加透明度 */
 }
 
 .modal-content {
   background: white;
   border-radius: 12rpx;
-  padding: 20rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.2);
+  padding: 30rpx; /* 增加内边距 */
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.3); /* 更明显的阴影效果 */
   z-index: 1001; /* 确保内容在遮罩层之上 */
   width: 80%; /* 可以根据需要调整宽度 */
   max-width: 400rpx; /* 最大宽度 */
@@ -557,10 +558,18 @@
   align-items: center; /* 居中对齐 */
 }
 
+/* 上传证件照提示样式 */
+.upload-instruction {
+  font-size: 28rpx; /* 提示文字大小 */
+  color: #333; /* 提示文字颜色 */
+  margin-bottom: 20rpx; /* 提示与上传区域之间的间距 */
+}
+
+/* 证件照上传区域样式 */
 .image-preview {
   width: 200rpx; /* 设置证件照相框宽度 */
   height: 300rpx; /* 设置证件照相框高度 */
-  border: 1px solid #ccc; /* 相框边框 */
+  border: 2rpx dashed #007aff; /* 使用虚线边框 */
   border-radius: 8rpx; /* 圆角 */
   padding: 10rpx; /* 内边距 */
   margin-bottom: 20rpx; /* 图片与按钮之间的间距 */
@@ -571,25 +580,60 @@
   overflow: hidden; /* 超出部分隐藏 */
 }
 
+/* 上传的图片样式 */
 .uploaded-image {
   max-width: 100%; /* 限制图片最大宽度 */
   max-height: 100%; /* 限制图片最大高度 */
+  border-radius: 8rpx; /* 图片圆角 */
 }
 
-.upload-button, .confirm-button {
+
+/* 占位符样式 */
+.placeholder {
+  color: #999; /* 占位符文字颜色 */
+  font-size: 16rpx; /* 占位符文字大小 */
+  text-align: center; /* 中心对齐 */
+}
+
+/* 按钮组样式 */
+.button-group {
+  display: flex; /* 使用 Flexbox 布局 */
+  justify-content: space-between; /* 按钮之间的间距 */
+  width: 100%; /* 容器宽度 */
+  margin-top: 20rpx; /* 上方间距 */
+}
+
+/* 确认按钮样式 */
+.confirm-button {
   background-color: #007aff; /* 按钮背景色 */
   color: white; /* 按钮文字颜色 */
-  padding: 10rpx 20rpx; /* 按钮内边距 */
+  padding: 12rpx 24rpx; /* 按钮内边距 */
   border-radius: 5rpx; /* 按钮圆角 */
-  margin: 10rpx 0; /* 按钮间距 */
+  flex: 1; /* 使按钮占据相同的空间 */
+  margin-left: 10rpx; /* 按钮间距 */
+  transition: background-color 0.3s; /* 添加过渡效果 */
   cursor: pointer; /* 鼠标指针样式 */
 }
 
+/* 取消按钮样式 */
+.cancel-button {
+  background-color: #f5f7fa; /* 背景色 */
+  color: #333; /* 文字颜色 */
+  padding: 12rpx 24rpx; /* 内边距 */
+  border-radius: 5rpx; /* 圆角 */
+  flex: 1; /* 使按钮占据相同的空间 */
+  margin-right: 10rpx; /* 按钮间距 */
+  border: 2rpx solid #007aff; /* 边框 */
+  transition: background-color 0.3s, color 0.3s; /* 添加过渡效果 */
+  cursor: pointer; /* 鼠标指针样式 */
+}
+
+/* 悬停效果 */
 .upload-button:hover, .confirm-button:hover {
   background-color: #005bb5; /* 悬停时的背景色 */
 }
 
-.placeholder {
-  color: #999; /* 占位符文字颜色 */
-  font-size: 16rpx; /* 占位符文字大小 */
+.cancel-button:hover {
+  background-color: #e0e0e0; /* 悬停时的背景色 */
+  color: #007aff; /* 悬停时的文字颜色 */
 }

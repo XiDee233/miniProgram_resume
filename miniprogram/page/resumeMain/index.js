@@ -6,64 +6,68 @@ Page({
     showExampleModal: false,
     showGuideModal: false,
     defaultResumeData: {
-      "name": "张强",
-      "age": 26,
+      "name": "小明",
+      "age": 30,
       "gender": "男",
       "phone": "178××××5678",
       "email": "zhangxx@tutanota.com",
       "education": {
-      "school": "北京理工大学",
-      "major": "数字媒体技术",
-      "duration": "2017.09-2021.06",
-      "courses": ["3D 建模与动画", "游戏引擎原理", "计算机图形学", "数字图像处理", "虚拟现实技术"]
+        "school": "××大学",
+        "major": "xx | 本科",
+        "duration": "xxx",
+        "courses": ["xx", "xx", "xx", "xx", "xx"]
       },
-      "honors": ["CET-4", "全国大学生创新创业大赛一等奖", "OpenCV比赛三等奖", "雅思6.0"],
+      "honors": ["xx", "xx", "xx", "xx"],
       "work_experience": [
-      {
-      "years": "2021.07-2022.08",
-      "company": "北京幻想游戏",
-      "position": "Unity 场景美术师",
-      "details": "独立完成 3D 场景制作，在 Unity 引擎中构建并编辑场景，布置灯光并烘焙灯光贴图，成功营造出多个游戏场景的效果和气氛。负责制作包括普通和 PBR 材质的场景模型和贴图，提升了场景的视觉表现。对场景进行优化调整，控制场景性能和最终效果，使游戏运行更加流畅。参与二次元风格场景设计，对二次元风格有深刻理解，提升了场景的沉浸感。"
-      },
-      {
-      "years": "2020.07-2021.06",
-      "company": "北京幻想游戏",
-      "position": "Unity 场景美术实习生",
-      "details": "协助完成 3D 场景制作，学习并应用 Unity 引擎进行场景构建和编辑，参与灯光布置和烘焙灯光贴图。参与制作普通和 PBR 材质的场景模型和贴图，积累了丰富的实践经验。对场景进行优化调整，学习控制场景性能和最终效果。参与二次元风格场景设计，提升了对二次元风格的理解和应用能力。"
-      }
+        {
+          "years": "xx",
+          "company": "×× 公司",
+          "position": "xx",
+          "details": "xx"
+        },
+        {
+          "years": "xx",
+          "company": "×× 公司",
+          "position": "xx",
+          "details": "xx"
+        },
+        {
+          "years": "xx",
+          "company": "×× 企业",
+          "position": "xx",
+          "details": "xx"
+        }
       ],
       "projects": [
-      {
-      "name": "末世题材游戏场景设计",
-      "tech": "Unity+3ds MAX+Substance Painter",
-      "results": "使用 Unity 引擎构建末世题材游戏场景，通过 3ds MAX 进行模型制作，Substance Painter 绘制 PBR 材质贴图。优化场景性能，控制最终效果，使游戏运行更加流畅。通过灯光布置和烘焙灯光贴图，成功营造出末世的氛围，提升了游戏的沉浸感。"
-      },
-      {
-      "name": "二次元风格场景设计",
-      "tech": "Unity+Maya+ZBrush",
-      "results": "使用 Unity 引擎构建二次元风格游戏场景，通过 Maya 进行模型制作，ZBrush 进行细节雕刻。优化场景性能，控制最终效果，使游戏运行更加流畅。通过灯光布置和烘焙灯光贴图，成功营造出二次元风格的氛围，提升了游戏的沉浸感。"
-      },
-      {
-      "name": "沙盒游戏场景设计",
-      "tech": "Unity+3ds MAX+Substance Painter",
-      "results": "使用 Unity 引擎构建沙盒游戏场景，通过 3ds MAX 进行模型制作，Substance Painter 绘制 PBR 材质贴图。优化场景性能，控制最终效果，使游戏运行更加流畅。通过灯光布置和烘焙灯光贴图，成功营造出沙盒游戏的自由氛围，提升了游戏的沉浸感。"
-      }
+        {
+          "name": "xx",
+          "tech": "xx",
+          "results": "xx"
+        },
+        {
+          "name": "xx",
+          "tech": "xx",
+          "results": "xx"
+        },
+        {
+          "name": "xx",
+          "tech": "xx",
+          "results": "xx"
+        },
+        {
+          "name": "xx",
+          "tech": "xx",
+          "results": "xx"
+        }
       ],
       "skills": [
-      "精通 Unity 引擎，能够独立完成 3D 场景构建和编辑",
-      "熟悉 3ds MAX、Maya、ZBrush 等建模软件，具备丰富的模型制作经验",
-      "掌握 Substance Painter，能够绘制高质量的 PBR 材质贴图",
-      "对光影和渲染有深刻理解，能够准确表现出质感，把控场景的表现",
-      "具备良好的沟通能力和团队合作精神，能够高效完成工作任务"
+        "xx",
+        "xx",
+        "xx",
+        "xx",
+        "xx"
       ]
-      },
-    isGenerating: false,
-    currentStep: 1,
-    showScreenshotExampleModal: false,
-    scrollAnimation: false,
-    generatedTokens: 0,
-    progressWidth: '0%',
-    progressText: '0%'
+    },
   },
 
   onLoad() {
@@ -73,7 +77,44 @@ Page({
       currentStep: 1,
       generatedTokens: 0
     });
+
+    // 显示隐私政策提示框
+    this.showPrivacyPolicy();
   },
+
+  showPrivacyPolicy() {
+    wx.showModal({
+      title: '隐私政策提示',
+      content: `尊敬的用户，欢迎使用本小程序！为了提供更优质的服务，我们可能会收集和处理您上传的图片或文本信息，但请放心：
+
+1. 数据用途：您上传的图片或文本仅用于生成简历内容，不会用于其他用途。
+2. 数据安全：所有处理过程均在云端完成，图片和文本将在处理后立即删除，不会存储或共享给任何第三方。
+3. 隐私保护：我们严格遵守相关法律法规，确保您的个人信息安全。
+
+继续使用本小程序，即表示您已阅读并同意我们的《隐私政策》。如有疑问，请勿上传敏感信息。`,
+      showCancel: true,
+      cancelText: '不同意',
+      confirmText: '同意',
+      success: (res) => {
+        if (res.confirm) {
+          // 用户同意
+          this.setData({ isPrivacyPolicyAccepted: true });
+          console.log('用户同意隐私政策');
+        } else if (res.cancel) {
+          // 用户不同意
+          wx.showToast({
+            title: '您必须同意隐私政策才能使用本小程序',
+            icon: 'none'
+          });
+          setTimeout(() => {
+            this.showPrivacyPolicy();
+          }, 200);
+        }
+      }
+    });
+  },
+
+
 
   uploadImage() {
     wx.chooseMedia({
@@ -142,138 +183,172 @@ Page({
   },
 
   parseJob() {
-    if (!this.data.jobDescription.trim()) {
+    if (!this.data.isPrivacyPolicyAccepted) {
+      wx.showToast({
+        title: '请先阅读并同意隐私政策',
+        icon: 'none'
+      });
+      return;
+    }
+
+    this.setData({
+      isKeyEmpty: false // 初始化为 false
+    });
+
+    const db = wx.cloud.database();
+    const keyDocId = "1c5ac29f67c3bb4600311a493a34ede8"; // 文档ID
+
+    // 检查云数据库中的 theKey 字段
+    db.collection('keys').doc(keyDocId).get().then(res => {
+      const theKey = res.data ? res.data.theKey : null;
+
+      // 如果 theKey 是空字符串，记录一个字段
+      if (theKey === "") {
+        this.setData({
+          isKeyEmpty: true // 设置为 true
+        });
+        // 显示微信自带的加载提示
+        wx.showLoading({
+          title: '加载中...',
+          mask: true // 遮罩层
+        });
+      }
+
+      // 继续执行原有的逻辑
+      if (!this.data.jobDescription.trim()) {
+        this.setData({
+          isGenerating: true,
+          currentStep: 1,
+          generatedTokens: 0
+        });
+
+        // 模拟加载过程
+        setTimeout(() => {
+          this.setData({ currentStep: 2 });
+          setTimeout(() => {
+            this.setData({ currentStep: 3 });
+            setTimeout(() => {
+              this.setData({ currentStep: 4 });
+              // 直接进行页面跳转，不需要先设置 isGenerating: false
+              wx.navigateTo({
+                url: "/page/resumePreview/preview?data=" + encodeURIComponent(JSON.stringify(this.data.defaultResumeData)),
+                success: () => {
+                  // 在页面跳转成功后再设置 isGenerating: false
+                  this.setData({ isGenerating: false });
+                  wx.hideLoading(); // 隐藏加载提示
+                }
+              });
+            }, 200);
+          }, 200);
+        }, 200);
+
+        return;
+      }
+
+      // 原有的生成逻辑
       this.setData({
         isGenerating: true,
         currentStep: 1,
         generatedTokens: 0
       });
 
-      // 模拟加载过程
-      setTimeout(() => {
-        this.setData({ currentStep: 2 });
-        setTimeout(() => {
-          this.setData({ currentStep: 3 });
-          setTimeout(() => {
-            this.setData({ currentStep: 4 });
-            // 直接进行页面跳转，不需要先设置 isGenerating: false
-            wx.navigateTo({
-              url: "/page/resumePreview/preview?data=" + encodeURIComponent(JSON.stringify(this.data.defaultResumeData)),
-              success: () => {
-                // 在页面跳转成功后再设置 isGenerating: false
-                this.setData({ isGenerating: false });
-              }
-            });
-          }, 1000);
-        }, 1000);
-      }, 1000);
-
-      return;
-    }
-
-    // 原有的生成逻辑
-    this.setData({
-      isGenerating: true,
-      currentStep: 1,
-      generatedTokens: 0
-    });
-
-    wx.cloud.callFunction({
-      name: 'generateResumeContent',
-      data: {
-        jobDescription: this.data.jobDescription
-      }
-    }).then(res => {
-      if (res.result && res.result.taskId) {
-        this.startProgressSimulation();
-        this.pollTaskResult(res.result.taskId);
-      } else {
-        this.setData({ 
+      wx.cloud.callFunction({
+        name: 'generateResumeContent',
+        data: {
+          jobDescription: this.data.jobDescription
+        }
+      }).then(res => {
+        if (res.result && res.result.taskId) {
+          this.startProgressSimulation();
+          this.pollTaskResult(res.result.taskId);
+        } else {
+          this.setData({
+            isGenerating: false,
+            generatedTokens: 0
+          });
+          wx.showToast({
+            title: '生成失败，请重试',
+            icon: 'none'
+          });
+          wx.hideLoading(); // 隐藏加载提示
+        }
+      }).catch(err => {
+        console.error('云函数调用失败:', err);
+        this.setData({
           isGenerating: false,
           generatedTokens: 0
         });
         wx.showToast({
-          title: '生成失败，请重试',
-          icon: 'none'
+          title: '服务暂时不可用，请稍后重试',
+          icon: 'none',
+          duration: 2000
         });
-      }
+        wx.hideLoading(); // 隐藏加载提示
+      });
     }).catch(err => {
-      console.error('云函数调用失败:', err);
-      this.setData({ 
-        isGenerating: false,
-        generatedTokens: 0
-      });
+      console.error('获取 theKey 失败:', err);
       wx.showToast({
-        title: '服务暂时不可用，请稍后重试',
-        icon: 'none',
-        duration: 2000
+        title: '无法检查密钥，请稍后重试',
+        icon: 'none'
       });
+      wx.hideLoading(); // 隐藏加载提示
     });
   },
 
   pollTaskResult(taskId) {
     const db = wx.cloud.database();
-    let retryCount = 0;
-    const maxRetries = 30;
-    
-    const checkResult = () => {
-      if (retryCount >= maxRetries) {
+    let attempts = 0;
+    const maxAttempts = 40; // 最大尝试次数
+
+    const checkInterval = setInterval(async () => {
+      if (attempts >= maxAttempts) {
+        clearInterval(checkInterval);
         this.setData({ isGenerating: false });
         wx.showToast({
           title: '生成超时，请重试',
           icon: 'none'
         });
+        this.deleteResumeContentTask(taskId);
         return;
       }
+      attempts++;
+      console.log('轮询尝试次数: ' + attempts);
 
-      db.collection('ai_tasks').where({
-        taskId: taskId
-      }).get({
-        success: (res) => {
-          if (res.data && res.data[0]) {
-            const task = res.data[0];
-            
-            if (task.currentContent) {
-              this.setData({
-                generatedTokens: task.totalTokens || task.currentContent.length
-              });
-            }
-            
-            if (task.status === 'completed') {
-              this.setData({ currentStep: 4 });
-              // 直接进行页面跳转，不需要先设置 isGenerating: false
-              wx.navigateTo({
-                url: "/page/resumePreview/preview?data=" + encodeURIComponent(task.result),
-                success: () => {
-                  // 在页面跳转成功后再设置 isGenerating: false
-                  this.setData({ isGenerating: false });
-                }
-              });
-              return;
-            } else if (task.status === 'failed') {
-              this.setData({ isGenerating: false });
-              wx.showToast({
-                title: '生成失败，请重试',
-                icon: 'none'
-              });
-              return;
-            }
-            
-            retryCount++;
-            setTimeout(checkResult, 2000);
+      try {
+        const res = await db.collection('gen_tasks').doc(taskId).get();
+        if (res.data) {
+          const task = res.data;
+
+          if (task.currentContent) {
+            this.setData({
+              generatedTokens: task.totalTokens || task.currentContent.length
+            });
           }
-        },
-        fail: (err) => {
-          this.setData({ isGenerating: false });
-          wx.showToast({
-            title: '查询失败，请重试',
-            icon: 'none'
-          });
-        }
-      });
-    };
 
-    checkResult();
+          if (task.status === 'completed' || task.status === 'failed') {
+            clearInterval(checkInterval); // 停止轮询
+            this.setData({ currentStep: 4 });
+            wx.navigateTo({
+              url: "/page/resumePreview/preview?data=" + encodeURIComponent(task.currentContent),
+              success: () => {
+                this.setData({ isGenerating: false });
+                wx.hideLoading()
+              }
+            });
+            return; // 成功或失败后停止轮询
+          }
+        }
+      } catch (err) {
+        console.error('查询任务状态失败:', err);
+        clearInterval(checkInterval);
+        this.setData({ isGenerating: false });
+        wx.showToast({
+          title: '查询失败，请重试',
+          icon: 'none'
+        });
+      }
+    }, 1000); // 每秒检查一次
+    this.checkInterval = checkInterval; // 保存 interval，以便在其他函数中清除
   },
 
   startProgressSimulation() {
@@ -296,29 +371,10 @@ Page({
     this.setData({ showExampleModal: false });
   },
 
-  copyExample() {
-    const exampleText = `高级前端开发工程师（15-30K·13薪）
 
-岗位职责：
-1. 负责公司核心产品的前端开发与优化
-...`; // 完整文本
 
-    wx.setClipboardData({
-      data: exampleText,
-      success: () => {
-        wx.showToast({
-          title: '已复制到剪贴板',
-          icon: 'success'
-        });
-      }
-    });
-  },
 
-  showScreenshotGuide() {
-    this.setData({
-      showGuideModal: true
-    });
-  },
+
 
   closeGuideModal() {
     this.setData({
@@ -330,7 +386,6 @@ Page({
     this.setData({
       showScreenshotExampleModal: true
     }, () => {
-      // 延迟开始滚动动画
       setTimeout(() => {
         this.setData({ scrollAnimation: true });
       }, 500);
@@ -348,19 +403,18 @@ Page({
     return;
   },
 
-  // 更新进度的方法
   updateProgress() {
-    const progress = Math.round((this.data.currentStep/4) * 100);
+    const progress = Math.round((this.data.currentStep / 4) * 100);
     this.setData({
       progressWidth: progress + '%',
       progressText: progress + '%'
     });
   },
 
-  // 在改变 currentStep 的地方调用 updateProgress
   onStepChange(step) {
     this.setData({ currentStep: step }, () => {
       this.updateProgress();
     });
   }
-});
+}
+)

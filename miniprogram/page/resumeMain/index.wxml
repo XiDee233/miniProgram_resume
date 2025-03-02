@@ -1,5 +1,5 @@
 <view class="container">
-  <view class="title">🎯 岗位简历生成器</view>
+  <view class="title">🎯 简历生成器</view>
   
   <view class="content-wrapper">
     <!-- 主输入区域 -->
@@ -53,7 +53,7 @@
   <!-- 底部按钮 -->
   <view class="bottom-button">
     <button class="main-btn" bindtap="parseJob">
-      一键生成简历 🚀
+      🚀 下 一 步 🚀
     </button>
   </view>
 
@@ -138,7 +138,7 @@
   </view>
 
   <!-- 在现有代码底部添加 -->
-  <view class="loading-modal {{isGenerating ? 'show' : ''}}" wx:if="{{isGenerating}}">
+  <view class="loading-modal {{isGenerating && !isKeyEmpty ? 'show' : ''}}" wx:if="{{isGenerating && !isKeyEmpty}}">
     <view class="loading-wrapper">
       <view class="loading-content">
         <view class="loading-icon {{currentStep >= 4 ? 'completed' : ''}}">
@@ -148,8 +148,8 @@
             <view class="ring"></view>
           </view>
           <view class="center-number">
-            <text class="number-label">字数</text>
-            <text class="number-value">{{generatedTokens || 0}}</text>
+            <text class="number-label" wx:if="{{generatedTokens > 0}}">字数</text>
+            <text class="number-value" wx:if="{{generatedTokens > 0}}">{{generatedTokens}}</text>
           </view>
         </view>
 

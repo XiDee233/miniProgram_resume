@@ -5,7 +5,7 @@
   ],
   "window": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "岗位简历生成器",
+    "navigationBarTitleText": "任意简历生成器Resume",
     "navigationBarBackgroundColor": "#fff",
     "backgroundColor": "#f8f9fa"
   },

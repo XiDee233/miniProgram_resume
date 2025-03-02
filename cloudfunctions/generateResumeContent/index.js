@@ -18,10 +18,31 @@ exports.main = async (event, context) => {
     const systemPrompt = await getSystemPromptFromStorage();
     const taskId = `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
+    const apiKey = await getApiKeyFromDatabase();
+    if (!apiKey) {
+      const defaultContent = await getDefaultContentFromStorage();
+      await db.collection('gen_tasks').add({
+        data: {
+          _id: taskId,
+          status: 'completed', 
+          createTime: db.serverDate(),
+          jobDescription: event.jobDescription,
+          currentContent: defaultContent, // 使用默认内容
+          totalTokens: defaultContent.length, // 设置字数
+        }
+      });
+      return { success: true, taskId };
+    }
+
+    const openai = new OpenAI({
+      apiKey: apiKey,
+      baseURL: 'https://ark.cn-beijing.volces.com/api/v3',
+    });
+
     // 创建初始任务记录
-    await db.collection('ai_tasks').add({
+    await db.collection('gen_tasks').add({
       data: {
-        taskId,
+        _id: taskId,
         status: 'processing',
         createTime: db.serverDate(),
         jobDescription: event.jobDescription,
@@ -31,7 +52,7 @@ exports.main = async (event, context) => {
     });
 
     // 异步处理流式请求
-    processStreamRequest(taskId, event.jobDescription, systemPrompt);
+    processStreamRequest(taskId, event.jobDescription, systemPrompt, openai);
 
     return {
       success: true,
@@ -44,17 +65,33 @@ exports.main = async (event, context) => {
   }
 };
 
+// 从云数据库获取 API 密钥
+async function getApiKeyFromDatabase() {
+  const db = cloud.database();
+  const result = await db.collection('keys').doc("1c5ac29f67c3bb4600311a493a34ede8").get(); // 替换为实际文档ID
+  return result.data ? result.data.theKey : null; // 假设 apiKey 存储在 data.apiKey 中
+}
+
+// 从云存储获取默认内容
+async function getDefaultContentFromStorage() {
+  try {
+    const result = await cloud.downloadFile({
+      fileID: 'cloud://sybcloud1-6g6f3534e3ef9bb9.7379-sybcloud1-6g6f3534e3ef9bb9-1344626996/defaultJson.txt' // 替换为实际的文件路径
+    });
+    
+    const buffer = result.fileContent;
+    return buffer.toString('utf8'); // 返回默认内容
+  } catch (error) {
+    console.error('读取默认内容失败:', error);
+    return ''; // 返回空字符串作为默认内容
+  }
+}
+
 // 处理流式请求
-async function processStreamRequest(taskId, jobDescription, systemPrompt) {
+async function processStreamRequest(taskId, jobDescription, systemPrompt, openai) {
   const db = cloud.database();
   
   try {
-    const apiKey = '1d22e409-2370-417f-9c4c-1eadf76ec7de';
-    const openai = new OpenAI({
-      apiKey: apiKey,
-      baseURL: 'https://ark.cn-beijing.volces.com/api/v3',
-    });
-
     const stream = await openai.chat.completions.create({
       messages: [
         {
@@ -84,9 +121,7 @@ async function processStreamRequest(taskId, jobDescription, systemPrompt) {
         if (updateTimer) clearTimeout(updateTimer);
         updateTimer = setTimeout(async () => {
           try {
-            await db.collection('ai_tasks').where({
-              taskId: taskId
-            }).update({
+            await db.collection('gen_tasks').doc(taskId).update({
               data: {
                 currentContent: fullContent,
                 totalTokens: fullContent.length,
@@ -101,12 +136,9 @@ async function processStreamRequest(taskId, jobDescription, systemPrompt) {
     }
 
     // 最终更新
-    await db.collection('ai_tasks').where({
-      taskId: taskId
-    }).update({
+    await db.collection('gen_tasks').doc(taskId).update({
       data: {
         status: 'completed',
-        result: fullContent,
         currentContent: fullContent,
         totalTokens: fullContent.length,
         updateTime: db.serverDate()
@@ -115,15 +147,22 @@ async function processStreamRequest(taskId, jobDescription, systemPrompt) {
 
   } catch (error) {
     console.error('流式生成失败:', error);
-    await db.collection('ai_tasks').where({
-      taskId: taskId
-    }).update({
+    
+    // 获取默认内容
+    const defaultContent = await getDefaultContentFromStorage();
+    
+    // 更新任务记录为失败并使用默认内容
+    await db.collection('gen_tasks').doc(taskId).update({
       data: {
         status: 'failed',
         error: error.message,
+        currentContent: defaultContent, // 使用默认内容
+        totalTokens: defaultContent.length, // 设置字数
         updateTime: db.serverDate()
       }
     });
+  } finally {
+    // 这里可以添加任何需要在结束时执行的清理代码
   }
 }
 
@@ -144,5 +183,3 @@ async function getSystemPromptFromStorage() {
     return null
   }
 }
-
-

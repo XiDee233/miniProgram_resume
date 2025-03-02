@@ -2,35 +2,36 @@
   <!-- 主内容区域 -->
   <scroll-view scroll-y class="content-scroll">
     <view class="content-wrapper">
-      <!-- 上传证件照提示 -->
-      <view class="upload-instruction">
-        <text>请上传您的证件照以生成简历</text>
-      </view>
-<!-- 弹窗 -->
-<view class="modal" wx:if="{{showModal}}">
-  <view class="modal-overlay" bindtap="closeModal"></view>
-  <view class="modal-content">
-    <!-- 证件照上传区域 -->
-    <view class="image-preview" bindtap="uploadImage">
-      <!-- 显示图片 -->
-      <image src="{{imageUrl}}" mode="aspectFit" class="uploaded-image" hidden="{{!imageUrl}}"></image>
-      <!-- 占位文本 -->
-      <view class="placeholder" hidden="{{imageUrl}}">
-        <text>请上传证件照</text>
-      </view>
-    </view>
-    
-    <!-- 生成简历按钮 -->
-    <view class="button-group">
+
+      <!-- 弹窗 -->
+      <view class="modal" wx:if="{{showModal}}">
+        <view class="modal-overlay" bindtap="closeModal"></view>
+        <view class="modal-content">
+          <!-- 上传证件照提示 -->
+          <view class="upload-instruction">
+            <text>请上传您的证件照以生成简历</text>
+          </view>
+          <!-- 证件照上传区域 -->
+          <view class="image-preview" bindtap="uploadImage">
+            <!-- 显示图片 -->
+            <image src="{{imageUrl}}" mode="aspectFit" class="uploaded-image" hidden="{{!imageUrl}}"></image>
+            <!-- 占位文本 -->
+            <view class="placeholder" hidden="{{imageUrl}}">
+              <text>请上传证件照</text>
+            </view>
+          </view>
+
+          <!-- 生成简历按钮 -->
+          <view class="button-group">
             <view class="cancel-button" bindtap="closeModal">
               <text>取消</text>
             </view>
             <view class="confirm-button" bindtap="generateResume">
-              <text>确定生成简历</text>
+              <text>确定生成</text>
             </view>
           </view>
-  </view>
-</view>
+        </view>
+      </view>
 
       <!-- 基本信息卡片 -->
       <view class="card">
@@ -39,46 +40,27 @@
         </view>
         <view class="card-content">
           <view class="info-grid">
-            <editable-text 
-              label="姓名"
-              value="{{resumeData.name}}"
-              bind:change="onFieldChange"
-              data-field="name"/>
-            <editable-text 
-              label="年龄"
-              value="{{resumeData.age}}"
-              type="number"
-              bind:change="onFieldChange"
-              data-field="age"/>
-            <editable-text 
-              label="电话"
-              value="{{resumeData.phone}}"
-              type="tel"
-              bind:change="onFieldChange"
-              data-field="phone"/>
-            <editable-text 
-              label="邮箱"
-              value="{{resumeData.email}}"
-              type="email"
-              bind:change="onFieldChange"
-              data-field="email"/>
-    </view>
-  </view>
-</view>
+            <editable-text label="姓名" value="{{resumeData.name}}" bind:change="onFieldChange" data-field="name" />
+            <editable-text label="年龄" value="{{resumeData.age}}" type="number" bind:change="onFieldChange" data-field="age" />
+            <editable-text label="电话" value="{{resumeData.phone}}" type="tel" bind:change="onFieldChange" data-field="phone" />
+            <editable-text label="邮箱" value="{{resumeData.email}}" type="email" bind:change="onFieldChange" data-field="email" />
+          </view>
+        </view>
+      </view>
 
-<!-- 加载提示 -->
-<view class="loading-container" wx:if="{{isGenerating}}">
-  <view class="loading-spinner">
-    <view class="loading-step" wx:for="{{[1,2,3,4]}}" wx:key="*this" class="{{currentStep >= item ? 'active' : ''}}"></view>
-  </view>
-  <view class="loading-text">
-    正在生成Word，请稍候... ({{progressText}})
-  </view>
-  <view class="progress-bar">
-    <view class="progress-bar-inner" style="width: {{progressWidth}};">
-    </view>
-  </view>
-</view>
+      <!-- 加载提示 -->
+      <view class="loading-container" wx:if="{{isGenerating}}">
+        <view class="loading-spinner">
+          <view class="loading-step" wx:for="{{[1,2,3,4]}}" wx:key="*this" class="{{currentStep >= item ? 'active' : ''}}"></view>
+        </view>
+        <view class="loading-text">
+          正在生成Word，请稍候... ({{progressText}})
+        </view>
+        <view class="progress-bar">
+          <view class="progress-bar-inner" style="width: {{progressWidth}};">
+          </view>
+        </view>
+      </view>
 
       <!-- 教育经历卡片 -->
       <view class="card">
@@ -87,21 +69,9 @@
         </view>
         <view class="card-content">
           <view class="edu-section">
-            <editable-text 
-              label="学校"
-              value="{{resumeData.education.school}}"
-              bind:change="onEducationChange"
-              data-field="school"/>
-            <editable-text 
-              label="专业"
-              value="{{resumeData.education.major}}"
-              bind:change="onEducationChange"
-              data-field="major"/>
-            <editable-text 
-              label="时间"
-              value="{{resumeData.education.duration}}"
-              bind:change="onEducationChange"
-              data-field="duration"/>
+            <editable-text label="学校" value="{{resumeData.education.school}}" bind:change="onEducationChange" data-field="school" />
+            <editable-text label="专业" value="{{resumeData.education.major}}" bind:change="onEducationChange" data-field="major" />
+            <editable-text label="时间" value="{{resumeData.education.duration}}" bind:change="onEducationChange" data-field="duration" />
             <view class="card">
               <view class="card-header">
                 <text class="card-title">主修课程</text>
@@ -109,11 +79,7 @@
               <view class="card-content">
                 <view class="skills-grid">
                   <view class="skill-item" wx:for="{{resumeData.education.courses}}" wx:key="index">
-                    <input class="skill-input" 
-                           value="{{item}}" 
-                           bindinput="onCourseChange" 
-                           data-index="{{index}}"
-                           placeholder="输入课程名称"/>
+                    <input class="skill-input" value="{{item}}" bindinput="onCourseChange" data-index="{{index}}" placeholder="输入课程名称" />
                     <view class="delete-icon" bindtap="deleteCourse" data-index="{{index}}">×</view>
                   </view>
                 </view>
@@ -140,30 +106,10 @@
           </view>
           <view class="card-content">
             <view class="work-info">
-              <editable-text 
-                label="公司"
-                value="{{item.company}}"
-                bind:change="onWorkChange"
-                data-field="company"
-                data-index="{{index}}"/>
-              <editable-text 
-                label="职位"
-                value="{{item.position}}"
-                bind:change="onWorkChange"
-                data-field="position"
-                data-index="{{index}}"/>
-              <editable-text 
-                label="时间"
-                value="{{item.years}}"
-                bind:change="onWorkChange"
-                data-field="years"
-                data-index="{{index}}"/>
-              <editable-text 
-                label="工作内容"
-                value="{{item.details}}"
-                bind:change="onWorkChange"
-                data-field="details"
-                data-index="{{index}}"/>
+              <editable-text label="公司" value="{{item.company}}" bind:change="onWorkChange" data-field="company" data-index="{{index}}" />
+              <editable-text label="职位" value="{{item.position}}" bind:change="onWorkChange" data-field="position" data-index="{{index}}" />
+              <editable-text label="时间" value="{{item.years}}" bind:change="onWorkChange" data-field="years" data-index="{{index}}" />
+              <editable-text label="工作内容" value="{{item.details}}" bind:change="onWorkChange" data-field="details" data-index="{{index}}" />
             </view>
           </view>
         </view>
@@ -186,24 +132,9 @@
           </view>
           <view class="card-content">
             <view class="project-info">
-              <editable-text 
-                label="项目名称"
-                value="{{item.name}}"
-                bind:change="onProjectChange"
-                data-field="name"
-                data-index="{{index}}"/>
-              <editable-text 
-                label="技术栈"
-                value="{{item.tech}}"
-                bind:change="onProjectChange"
-                data-field="tech"
-                data-index="{{index}}"/>
-              <editable-text 
-                label="项目成果"
-                value="{{item.results}}"
-                bind:change="onProjectChange"
-                data-field="results"
-                data-index="{{index}}"/>
+              <editable-text label="项目名称" value="{{item.name}}" bind:change="onProjectChange" data-field="name" data-index="{{index}}" />
+              <editable-text label="技术栈" value="{{item.tech}}" bind:change="onProjectChange" data-field="tech" data-index="{{index}}" />
+              <editable-text label="项目成果" value="{{item.results}}" bind:change="onProjectChange" data-field="results" data-index="{{index}}" />
             </view>
           </view>
         </view>
@@ -221,13 +152,7 @@
         <view class="card-content">
           <view class="skills-grid">
             <view class="skill-item" wx:for="{{resumeData.skills}}" wx:key="index">
-              <textarea class="skill-input" 
-                       value="{{item}}" 
-                       bindinput="onSkillChange" 
-                       data-index="{{index}}"
-                       auto-height
-                       show-confirm-bar="{{false}}"
-                       placeholder="输入技能"/>
+              <textarea class="skill-input" value="{{item}}" bindinput="onSkillChange" data-index="{{index}}" auto-height show-confirm-bar="{{false}}" placeholder="输入技能" />
               <view class="delete-icon" bindtap="deleteSkill" data-index="{{index}}">×</view>
             </view>
           </view>
@@ -246,11 +171,7 @@
         <view class="card-content">
           <view class="skills-grid">
             <view class="skill-item" wx:for="{{resumeData.honors}}" wx:key="index">
-              <input class="skill-input" 
-                     value="{{item}}" 
-                     bindinput="onHonorChange" 
-                     data-index="{{index}}"
-                     placeholder="输入荣誉名称"/>
+              <input class="skill-input" value="{{item}}" bindinput="onHonorChange" data-index="{{index}}" placeholder="输入荣誉名称" />
               <view class="delete-icon" bindtap="deleteHonor" data-index="{{index}}">×</view>
             </view>
           </view>
@@ -270,9 +191,6 @@
     </view>
     <view class="bottom-btn btn-save" bindtap="previewWord">
       生成简历
-    </view>
-    <view class="bottom-btn btn-submit" bindtap="exaggerateResume">
-      夸大能力
     </view>
   </view>
 

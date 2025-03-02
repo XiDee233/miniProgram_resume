@@ -24,13 +24,14 @@ exports.main = async (event) => {
   });
 
   // 2. 异步执行生成操作
-  await generateWord(taskId, event.resumeData, event.imageUrl); // 传递简历数据和证件照 URL
+  generateWord(taskId, event.resumeData, event.imageUrl); // 传递简历数据和证件照 URL，不使用 await
 
   // 3. 立即返回任务 ID
   return { taskId };
 };
 
 async function generateWord(taskId, resumeData, imageUrl) {
+  let localImagePath = ''; // 本地临时文件路径
   try {
     // 1. 从云存储下载模板文件
     const templateRes = await cloud.downloadFile({
@@ -61,8 +62,6 @@ async function generateWord(taskId, resumeData, imageUrl) {
     const imageModule = new ImageModule(opts);
 
     // **---  图片下载和临时文件处理  ---**
-    let localImagePath = ''; // 本地临时文件路径
-
     if (imageUrl) { // 使用传入的证件照 URL
        try {
            console.log(`开始下载云图片: ${imageUrl}`);
@@ -127,6 +126,14 @@ async function generateWord(taskId, resumeData, imageUrl) {
       fileContent: outputBuffer,
     });
 
+    // 删除云存储中的图片
+    if (imageUrl) { // 确保 imageUrl 存在
+        await cloud.deleteFile({
+            fileList: [imageUrl], // 删除指定的云存储文件
+        });
+        console.log(`云存储中的图片 ${imageUrl} 已删除`);
+    }
+
     // 6. 更新任务状态为"已完成"
     await cloud.database().collection('word_tasks').doc(taskId).update({
       data: { status: 'completed', fileID: uploadRes.fileID }
@@ -138,15 +145,27 @@ async function generateWord(taskId, resumeData, imageUrl) {
     await cloud.database().collection('word_tasks').doc(taskId).update({
       data: { status: 'failed', error: e.message }
     });
+
+    // 尝试删除云存储中的图片
+    if (imageUrl) {
+      try {
+        await cloud.deleteFile({
+          fileList: [imageUrl],
+        });
+        console.log(`云存储中的图片 ${imageUrl} 已删除（在错误处理时）`);
+      } catch (deleteError) {
+        console.error('删除云存储中的图片失败:', deleteError);
+      }
+    }
   } finally {
     // 删除临时文件
     if (localImagePath) {
-      fs.unlinkSync(localImagePath);
-      console.log(`临时文件 ${localImagePath} 已删除`);
+      try {
+        fs.unlinkSync(localImagePath);
+        console.log(`临时文件 ${localImagePath} 已删除`);
+      } catch (unlinkError) {
+        console.error('删除临时文件失败:', unlinkError);
+      }
     }
-
-    // 删除任务记录
-    await cloud.database().collection('word_tasks').doc(taskId).remove();
-    console.log(`任务记录 ${taskId} 已删除`);
   }
 }
