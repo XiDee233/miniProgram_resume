@@ -1,7 +1,5 @@
 {
   "usingComponents": {
-    "editable-text": "../../components/editable-text/index",
-    "editable-array": "../../components/editable-array/index",
-    "skill-tag": "../../components/skill-tag/index"
+    "editable-text": "../../components/editable-text/index"
   }
 }

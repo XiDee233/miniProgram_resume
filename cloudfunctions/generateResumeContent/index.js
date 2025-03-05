@@ -39,7 +39,7 @@ exports.main = async (event, context) => {
       baseURL: 'https://ark.cn-beijing.volces.com/api/v3',
     });
 
-    // 创建初始任务记录
+
     await db.collection('gen_tasks').add({
       data: {
         _id: taskId,
@@ -65,18 +65,17 @@ exports.main = async (event, context) => {
   }
 };
 
-// 从云数据库获取 API 密钥
+
 async function getApiKeyFromDatabase() {
   const db = cloud.database();
-  const result = await db.collection('keys').doc("1c5ac29f67c3bb4600311a493a34ede8").get(); // 替换为实际文档ID
-  return result.data ? result.data.theKey : null; // 假设 apiKey 存储在 data.apiKey 中
+  const result = await db.collection('keys').doc("1c5ac29f67c3bb4600311a493a34ede8").get(); 
+  return result.data ? result.data.theKey : null; 
 }
 
-// 从云存储获取默认内容
 async function getDefaultContentFromStorage() {
   try {
     const result = await cloud.downloadFile({
-      fileID: 'cloud://sybcloud1-6g6f3534e3ef9bb9.7379-sybcloud1-6g6f3534e3ef9bb9-1344626996/defaultJson.txt' // 替换为实际的文件路径
+      fileID: 'cloud://sybcloud1-6g6f3534e3ef9bb9.7379-sybcloud1-6g6f3534e3ef9bb9-1344626996/defaultJson.txt' 
     });
     
     const buffer = result.fileContent;
@@ -87,7 +86,7 @@ async function getDefaultContentFromStorage() {
   }
 }
 
-// 处理流式请求
+
 async function processStreamRequest(taskId, jobDescription, systemPrompt, openai) {
   const db = cloud.database();
   

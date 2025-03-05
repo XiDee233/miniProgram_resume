@@ -1,68 +1,61 @@
-// 云函数入口文件
 const cloud = require('wx-server-sdk');
 const axios = require('axios');
+const URLSearchParams = require('url').URLSearchParams; // 引入 URLSearchParams
 
-// 初始化云开发环境
 cloud.init();
 
-// 阿里云 OCR API 配置
-const ALIYUN_HOST = "https://gjbsb.market.alicloudapi.com";
-const ALIYUN_PATH = "/ocrservice/advanced";
-const APPCODE = "cd19e7da958b4473af546c7e8a3ecb84";  // 需要替换成你自己的 APPCODE
+const OCR_SPACE_API_URL = 'https://api.ocr.space/parse/image';
+const API_KEY_1 = 'K85981020188957'; // 替换为你的第一个 API 密钥
+const API_KEY_2 = '8280cebb0488957'; // 替换为你的第二个 API 密钥
 
-exports.main = async function(event, context) {
-  if (!event.fileID) {
-    return { error: "fileID 不能为空" };
-  }
+exports.main = async (event, context) => {
+  if (!event.fileID) {
+    return { error: "fileID 不能为空" };
+  }
 
-  try {
-    // 1. 下载云存储文件
-    const res = await cloud.downloadFile({
-      fileID: event.fileID
-    });
-    const buffer = res.fileContent;
-    
-    // 将图片转为base64
-    const base64Img = buffer.toString('base64');
+  try {
+    // 1. 获取云存储临时 URL
+    const tempUrlRes = await cloud.getTempFileURL({
+      fileList: [event.fileID]
+    });
+    const tempUrl = tempUrlRes.fileList[0].tempFileURL;
 
-    // 2. 调用阿里云 OCR 识别
-    const requestData = JSON.stringify({
-      img: base64Img,
-      url: "",
-      prob: false,
-      charInfo: false,
-      rotate: false,
-      table: false
-    });
+    // 2. 构建 URLSearchParams 对象
+    const apiKey = Math.random() < 0.5 ? API_KEY_1 : API_KEY_2; // 随机选择 API 密钥
+    const params = new URLSearchParams();
+    params.append('apikey', apiKey);
+    params.append('url', tempUrl);
+    params.append('language', 'chs');
+    params.append('filetype', 'JPG');
 
-    const headers = {
-      "Authorization": `APPCODE ${APPCODE}`,
-      "Content-Type": "application/json; charset=UTF-8"
-    };
+    // 3. 调用 OCR.Space API 识别，并设置 Content-Type
+    const response = await axios.post(OCR_SPACE_API_URL, params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    });
 
-    const response = await axios({
-      method: 'post',
-      url: ALIYUN_HOST + ALIYUN_PATH,
-      headers: headers,
-      data: requestData
-    });
+    // 4. 解析返回结果 (与之前代码相同)
+    let text = "";
+    if (response.data && !response.data.IsErroredOnProcessing) {
+      if (response.data.ParsedResults && response.data.ParsedResults.length > 0) { // 增加判断 ParsedResults 是否存在
+        text = response.data.ParsedResults[0].ParsedText;
+      }
+    }
 
-    // 3. 解析返回结果
-    var text = "";
-    if (response.data && response.data.prism_wordsInfo) {
-      text = response.data.prism_wordsInfo.map(function(item) {
-        return item.word;
-      }).join("\n");
-    }
+    // 如果没有识别到文字，返回提示信息
+    if (!text) {
+      return { error: "未能识别到文字内容" };
+    }
 
-    // 如果没有识别到文字，返回提示信息
-    if (!text) {
-      return { error: "未能识别到文字内容" };
-    }
+    // 5. 删除云文件
+    await cloud.deleteFile({
+      fileList: [event.fileID]
+    });
 
-    return { text: text };
-  } catch (err) {
-    console.error("OCR 识别失败:", err);
-    return { error: String(err.message) };
-  }
+    return { text: text };
+  } catch (err) {
+    console.error("OCR 识别失败:", err);
+    return { error: String(err.message) };
+  }
 };

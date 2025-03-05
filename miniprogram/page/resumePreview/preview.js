@@ -313,7 +313,7 @@ Page({
     return text;
   },
 
- 
+
 
   exaggerateResume() {
     wx.showToast({
@@ -450,46 +450,53 @@ Page({
   },
 
   uploadImageToCloud(filePath) {
+    wx.showLoading({
+      title: '上传中',
+    })
     // 获取文件信息以检查大小
     wx.getFileInfo({
-        filePath: filePath,
-        success: (fileInfo) => {
-            // 检查文件大小是否超过 4MB
-            if (fileInfo.size > 4 * 1024 * 1024) { // 4MB
-                wx.showToast({
-                    title: '文件大小不能超过 4MB',
-                    icon: 'none'
-                });
-                return; // 终止上传
-            }
-
-            // 文件大小合格，进行上传
-            wx.cloud.uploadFile({
-                cloudPath: `photos/${Date.now()}.jpg`, // 云存储路径
-                filePath: filePath, // 本地文件路径
-                success: (res) => {
-                    const imageUrl = res.fileID; // 获取上传后的文件ID
-                    this.setData({ imageUrl }); // 更新图片URL
-                },
-                fail: () => {
-                    wx.showToast({
-                        title: '上传图片失败，请重试',
-                        icon: 'none'
-                    });
-                }
-            });
-        },
-        fail: () => {
-            wx.showToast({
-                title: '获取文件信息失败，请重试',
-                icon: 'none'
-            });
+      filePath: filePath,
+      success: (fileInfo) => {
+        // 检查文件大小是否超过 4MB
+        if (fileInfo.size > 4 * 1024 * 1024) { // 4MB
+          wx.showToast({
+            title: '文件大小不能超过 4MB',
+            icon: 'none'
+          });
+          wx.hideLoading()
+          return; // 终止上传
         }
+
+        // 文件大小合格，进行上传
+        wx.cloud.uploadFile({
+          cloudPath: `photos/${Date.now()}.jpg`, // 云存储路径
+          filePath: filePath, // 本地文件路径
+          success: (res) => {
+            const imageUrl = res.fileID; // 获取上传后的文件ID
+            this.setData({ imageUrl }); // 更新图片URL
+            wx.hideLoading()
+          },
+          fail: () => {
+            wx.hideLoading()
+            wx.showToast({
+              title: '上传图片失败，请重试',
+              icon: 'none'
+            });
+          }
+        });
+      },
+      fail: () => {
+        wx.showToast({
+          title: '获取文件信息失败，请重试',
+          icon: 'none'
+        });
+      }
     });
   },
 
   // 确定生成简历
   generateResume() {
+ 
     if (!this.data.imageUrl) {
       wx.showToast({
         title: '请先上传证件照',
@@ -583,7 +590,7 @@ Page({
       });
       this.updateProgress(); // 新增
       this.fallbackDownloadWord(task.fileID);
-      
+
     } else if (task.status === 'failed') {
       clearInterval(checkInterval);
       clearInterval(this.interval); // 清除模拟进度的定时器
@@ -593,7 +600,7 @@ Page({
       });
       this.updateProgress(); // 新增
       this.handleError('文件生成失败');
-      
+
     }
   },
 
@@ -644,7 +651,7 @@ Page({
                 fileType: 'docx' // Word文档类型
               });
               // 下载成功后删除文件
-              this.deleteFile(fileID);
+              this.closeModal();
             },
             fail: (downloadErr) => {
               console.log(downloadErr);
@@ -653,12 +660,12 @@ Page({
                 icon: 'none'
               });
               // 下载失败时删除文件
-              this.deleteFile(fileID);
+              this.closeModal(fileID);
             }
           });
         } else {
           // 用户选择不下载时立即删除文件
-          this.deleteFile(fileID);
+          this.closeModal(fileID);
         }
       }
     });
@@ -680,21 +687,22 @@ Page({
   // 关闭弹窗
   closeModal() {
     // 检查是否有上传的图片
-    if (this.data.imageUrl) {
-        wx.cloud.deleteFile({
-            fileList: [this.data.imageUrl], // 传入要删除的文件路径
-            success: res => {
-                console.log('文件删除成功', res.fileList);
-            },
-            fail: err => {
-                console.error('文件删除失败', err);
-            }
-        });
+    if (this.data.imageUrl) 
+    {
+      wx.cloud.deleteFile(
+        {
+        fileList: [this.data.imageUrl], // 传入要删除的文件路径
+        success: res => {
+          console.log('文件删除成功', res.fileList);
+        },
+        fail: err => {
+          console.error('文件删除失败', err);
+        }
+      });
     }
-
     this.setData({
-        showModal: false,
-        imageUrl: '' // 清空已上传的图片
+      showModal: false,
+      imageUrl: '' // 清空已上传的图片
     });
   },
 

@@ -14,10 +14,10 @@
           <!-- 证件照上传区域 -->
           <view class="image-preview" bindtap="uploadImage">
             <!-- 显示图片 -->
-            <image src="{{imageUrl}}" mode="aspectFit" class="uploaded-image" hidden="{{!imageUrl}}"></image>
+            <image wx:if="{{imageUrl}}" src="{{imageUrl}}" mode="aspectFit" class="uploaded-image"></image>
             <!-- 占位文本 -->
-            <view class="placeholder" hidden="{{imageUrl}}">
-              <text>请上传证件照</text>
+            <view class="placeholder" wx:else>
+              <text style="font-size: 32rpx;">证件照</text>
             </view>
           </view>
 

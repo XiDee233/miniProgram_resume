@@ -5,6 +5,7 @@ Page({
     currentLength: 0,
     showExampleModal: false,
     showGuideModal: false,
+    uploadTip: "",
     defaultResumeData: {
       "name": "小明",
       "age": 30,
@@ -68,6 +69,8 @@ Page({
         "xx"
       ]
     },
+    // isPrivacyPolicyAccepted: false,
+    // showPrivacy: false
   },
 
   onLoad() {
@@ -78,43 +81,23 @@ Page({
       generatedTokens: 0
     });
 
-    // 显示隐私政策提示框
-    this.showPrivacyPolicy();
+    this.loadUploadTip();
+
   },
 
-  showPrivacyPolicy() {
-    wx.showModal({
-      title: '隐私政策提示',
-      content: `尊敬的用户，欢迎使用本小程序！为了提供更优质的服务，我们可能会收集和处理您上传的图片或文本信息，但请放心：
-
-1. 数据用途：您上传的图片或文本仅用于生成简历内容，不会用于其他用途。
-2. 数据安全：所有处理过程均在云端完成，图片和文本将在处理后立即删除，不会存储或共享给任何第三方。
-3. 隐私保护：我们严格遵守相关法律法规，确保您的个人信息安全。
-
-继续使用本小程序，即表示您已阅读并同意我们的《隐私政策》。如有疑问，请勿上传敏感信息。`,
-      showCancel: true,
-      cancelText: '不同意',
-      confirmText: '同意',
-      success: (res) => {
-        if (res.confirm) {
-          // 用户同意
-          this.setData({ isPrivacyPolicyAccepted: true });
-          console.log('用户同意隐私政策');
-        } else if (res.cancel) {
-          // 用户不同意
-          wx.showToast({
-            title: '您必须同意隐私政策才能使用本小程序',
-            icon: 'none'
-          });
-          setTimeout(() => {
-            this.showPrivacyPolicy();
-          }, 200);
-        }
-      }
-    });
+  loadUploadTip() {
+    const db = wx.cloud.database();
+    db.collection('tips').doc('ef34384667c6cbe3005a4573243a639e') // 替换为你的文档ID
+      .get()
+      .then(res => {
+        this.setData({
+          uploadTip: res.data.text // 假设你的文档中有一个字段叫 text
+        });
+      })
+      .catch(err => {
+        console.error('获取提示文本失败:', err);
+      });
   },
-
-
 
   uploadImage() {
     wx.chooseMedia({
@@ -164,7 +147,6 @@ Page({
     });
   },
 
-
   onInputChange(e) {
     const value = e.detail.value;
     this.setData({
@@ -183,14 +165,10 @@ Page({
   },
 
   parseJob() {
-    if (!this.data.isPrivacyPolicyAccepted) {
-      wx.showToast({
-        title: '请先阅读并同意隐私政策',
-        icon: 'none'
-      });
-      return;
-    }
-
+    wx.showLoading({
+      title: '加载中...',
+      mask: true // 遮罩层
+    });
     this.setData({
       isKeyEmpty: false // 初始化为 false
     });
@@ -205,10 +183,7 @@ Page({
         this.setData({
           isKeyEmpty: true // 设置为 true
         });
-        wx.showLoading({
-          title: '加载中...',
-          mask: true // 遮罩层
-        });
+
       }
 
       // 继续执行原有的逻辑
@@ -248,6 +223,7 @@ Page({
         });
         return;
       }
+      wx.hideLoading(); // 隐藏加载提示
 
       // 原有的生成逻辑
       this.setData({
@@ -302,7 +278,7 @@ Page({
   pollTaskResult(taskId) {
     const db = wx.cloud.database();
     let attempts = 0;
-    const maxAttempts = 40; // 最大尝试次数
+    const maxAttempts = 60; // 最大尝试次数
 
     const checkInterval = setInterval(async () => {
       if (attempts >= maxAttempts) {
@@ -375,11 +351,6 @@ Page({
     this.setData({ showExampleModal: false });
   },
 
-
-
-
-
-
   closeGuideModal() {
     this.setData({
       showGuideModal: false
@@ -419,6 +390,26 @@ Page({
     this.setData({ currentStep: step }, () => {
       this.updateProgress();
     });
-  }
-}
-)
+  },
+
+  // 添加 onShareTimeline 方法以支持分享到朋友圈
+  onShareTimeline() {
+    return {
+      title: '一键生成完美简历', // 自定义标题
+    };
+  },
+
+  onShareAppMessage() {
+    const promise = new Promise(resolve => {
+      setTimeout(() => {
+        resolve({
+          title: '一键生成完美简历'
+        });
+      }, 2000);
+    });
+    return {
+      title: '一键生成完美简历',
+      promise 
+    };
+  },
+})
