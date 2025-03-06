@@ -589,7 +589,7 @@ Page({
         currentStep: 4 // 新增
       });
       this.updateProgress(); // 新增
-      this.fallbackDownloadWord(task.fileID);
+      this.fallbackDownloadWord(task);
 
     } else if (task.status === 'failed') {
       clearInterval(checkInterval);
@@ -637,36 +637,71 @@ Page({
     wx.showToast({ title: message, icon: 'none' });
   },
 
-  fallbackDownloadWord(fileID) {
-    wx.showModal({
-      title: '提示',
-      content: '已生成完毕，是否下载？？',
-      success: (res) => {
-        if (res.confirm) {
-          wx.cloud.downloadFile({
-            fileID: fileID,
-            success: (downloadRes) => {
-              wx.openDocument({
-                filePath: downloadRes.tempFilePath,
-                fileType: 'docx' // Word文档类型
-              });
-              // 下载成功后删除文件
-              this.closeModal();
-            },
-            fail: (downloadErr) => {
-              console.log(downloadErr);
-              wx.showToast({
-                title: '下载失败，请稍后再试',
-                icon: 'none'
-              });
-              // 下载失败时删除文件
+  fallbackDownloadWord(task) {
+    const fileID = task.fileID;
+    const fileName = task.fileName || '简历'; // 使用任务中的文件名或设置默认文件名
+
+    // 显示加载提示
+    wx.showLoading({
+      title: '下载中...',
+    });
+
+    // 自动下载文件
+    wx.cloud.downloadFile({
+      fileID: fileID,
+      success: (downloadRes) => {
+        const tempFilePath = downloadRes.tempFilePath;
+
+        // 下载成功后隐藏加载提示
+        wx.hideLoading();
+
+        // 下载成功后询问是否分享
+        wx.showModal({
+          title: '提示',
+          content: '文件已下载，是否分享文件？',
+          success: (res) => {
+            if (res.confirm) {
+              // 用户选择分享
+              this.shareFile(tempFilePath, `${fileName}.docx`);
+              this.closeModal(fileID);
+            } else {
+              // 用户选择不分享时删除文件
               this.closeModal(fileID);
             }
-          });
-        } else {
-          // 用户选择不下载时立即删除文件
-          this.closeModal(fileID);
-        }
+          }
+        });
+      },
+      fail: (downloadErr) => {
+        // 下载失败时隐藏加载提示
+        wx.hideLoading();
+        console.log(downloadErr);
+        wx.showToast({
+          title: '下载失败，请稍后再试',
+          icon: 'none'
+        });
+        // 下载失败时删除文件
+        this.closeModal(fileID);
+      }
+    });
+  },
+
+  // 分享文件的函数
+  shareFile(filePath, fileName) {
+    wx.shareFileMessage({
+      filePath: filePath, // 分享的文件路径
+      fileName: fileName, // 自定义文件名
+      success() {
+        wx.showToast({
+          title: '分享成功',
+          icon: 'success'
+        });
+      },
+      fail: (shareErr) => {
+        console.error(shareErr);
+        wx.showToast({
+          title: '分享失败，请稍后再试',
+          icon: 'none'
+        });
       }
     });
   },

@@ -19,7 +19,8 @@ exports.main = async (event) => {
   await db.collection('word_tasks').add({
     data: {
       _id: taskId,
-      status: 'processing'
+      status: 'processing',
+      fileName: `${event.resumeData.name}的简历`
     }
   });
 

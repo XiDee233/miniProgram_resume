@@ -278,7 +278,7 @@ Page({
   pollTaskResult(taskId) {
     const db = wx.cloud.database();
     let attempts = 0;
-    const maxAttempts = 60; // 最大尝试次数
+    const maxAttempts = 120; // 最大尝试次数
 
     const checkInterval = setInterval(async () => {
       if (attempts >= maxAttempts) {
